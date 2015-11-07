@@ -18,7 +18,7 @@ public class DotAI : MonoBehaviour {
 	};
 
 	public void OnMouseClick() {
-		Debug.Log ( ID + "#" + color + " will be destroyed");
+		//Debug.Log ( ID + "#" + color + " will be destroyed");
 		transform.parent.GetComponent<DotSpawnerAI> ().Remove (gameObject);
 		Destroy (gameObject);
 	}

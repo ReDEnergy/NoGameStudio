@@ -24,7 +24,7 @@ public class DotSpawnerAI : MonoBehaviour {
 		h = Math.Abs((int)rectDot.rect.height);
 		w = Math.Abs((int)rectDot.rect.width);
 
-		Debug.Log (H + " " + W + " " + " " + h + " " + w);
+		//Debug.Log (H + " " + W + " " + " " + h + " " + w);
 		n = (W/w);
 		m= (H/h);
 
@@ -35,7 +35,7 @@ public class DotSpawnerAI : MonoBehaviour {
 
 		for (int i = 0; i < noOfSlots; i++) {
 			available.Add (i);
-			Debug.Log(GetSlot(i));
+			//Debug.Log(GetSlot(i));
 		}
 
 		StartCoroutine (Spawn (spawnTime));
