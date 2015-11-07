@@ -1,0 +1,18 @@
+#ignore unity-generated folders
+Temp/
+Library/
+
+#ignore VS generated files and folders
+obj/
+*.csproj
+*.suo
+*.sln
+*.unityproj
+
+#extra folder
+Extra/
+/ProjectSettings/ProjectVersion.txt
+/ProjectSettings/ProjectSettings.asset
+/*.userprefs
+*.rar
+*.zip
