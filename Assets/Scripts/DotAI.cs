@@ -7,7 +7,7 @@ public class DotAI : MonoBehaviour {
 	public int ID  = 0; 
 	public int slot = 0;
 	public Color color = Color.NONE;
-	public Image image;
+
 
 	public static Dictionary<Color, UnityEngine.Color> hash = new Dictionary<Color, UnityEngine.Color>() { 
 		{Color.WHITE, UnityEngine.Color.white},
@@ -17,8 +17,9 @@ public class DotAI : MonoBehaviour {
 		{Color.BLACK, UnityEngine.Color.black}
 	};
 
-	public void OnMouseClick() {
-		//Debug.Log ( ID + "#" + color + " will be destroyed");
+
+	public void OnMouseDown() {
+		Debug.Log ( ID + "#" + color + " will be destroyed");
 		transform.parent.GetComponent<DotSpawnerAI> ().Remove (gameObject);
 		Destroy (gameObject);
 	}
@@ -27,7 +28,7 @@ public class DotAI : MonoBehaviour {
 		this.ID = ID;
 		this.color = color;
 		this.slot = slot;
-		image.color = hash [color];
+		GetComponent<SpriteRenderer> ().color = hash [color];
 	}
 
 }

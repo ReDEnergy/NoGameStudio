@@ -14,37 +14,31 @@ public class DotSpawnerAI : MonoBehaviour {
 
 	private List<GameObject> dots = new List<GameObject>();
 
-	// Use this for initialization
 	void Start () {
-		RectTransform rectSpawner = transform.GetComponent (typeof (RectTransform)) as RectTransform;
+
 		RectTransform rectDot = dotPrefab.GetComponent (typeof (RectTransform)) as RectTransform;
 
-		H = Math.Abs((int)rectSpawner.rect.height);
-		W = Math.Abs((int)rectSpawner.rect.width);
+		H = Screen.height / 4;
+		W = Screen.width / 4;
 		h = Math.Abs((int)rectDot.rect.height);
 		w = Math.Abs((int)rectDot.rect.width);
-
-		//Debug.Log (H + " " + W + " " + " " + h + " " + w);
-		n = (W/w);
-		m= (H/h);
+		
+		n = 6;
+		m = 6;
 
 		noOfSlots =  n*m;
-		Debug.Log ("MAX NUMBERS OF SLOTS = "+ n + " * " + m);
-		Debug.Log ("MAX NUMBERS OF DOTS = "+ MAXDOTS);
-
 
 		for (int i = 0; i < noOfSlots; i++) {
 			available.Add (i);
-			//Debug.Log(GetSlot(i));
-		}
 
+		}
 		StartCoroutine (Spawn (spawnTime));
 	}
 
 	private Vector2 GetSlot(int i) {
-		return  new Vector2 ((i / n) * (h+10) + 10, (i % m) * (w+10) + 10)- new Vector2(H/4, W/4);
+		return  new Vector2 (i/6, i % 6) - new Vector2 ( 3,3);
 	}
-	// Update is called once per frame
+
 	void Update () {
 		if (Input.GetKeyDown (KeyCode.G)) {
 			if (dots.Count < MAXDOTS)
@@ -55,7 +49,6 @@ public class DotSpawnerAI : MonoBehaviour {
 	public void Remove(GameObject dot) {
 		dots.Remove (dot);
 		available.Add (dot.GetComponent<DotAI> ().slot);
-		//Debug.Log (dots.Count + " dots remaining");
 	}
 
 	IEnumerator Spawn(float time) {
