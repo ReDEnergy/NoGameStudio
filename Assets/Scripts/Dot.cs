@@ -5,18 +5,34 @@ public class Dot : MonoBehaviour
 {
 	public SpriteRenderer	sprite;
 	public Transform        explosion;
+	public GameObject       highlight;
 
-	public Color			myColor;
+	public int				colorIndex;
+
+
+	GameManager _GM;
+	int         _goodWaveCount = 0;
 
 
 	void Start()
 	{
-		sprite.color = myColor;
+		_GM = FindObjectOfType<GameManager>();
+		sprite.color = _GM.GetColor( colorIndex ).color;
 	}
 	
+
+	void Update()
+	{
+		highlight.SetActive( _goodWaveCount > 0 );
+	}
+
+
 	void OnMouseDown()
 	{
-		_GetDestroyed();
+		if ( _goodWaveCount > 0 )
+		{
+			_GetDestroyed();
+		}
     }
 
 
@@ -24,6 +40,35 @@ public class Dot : MonoBehaviour
 	{
 		Instantiate( explosion, transform.position, Quaternion.identity );
 
+		_GM.OnDotDestroyed( colorIndex );
+
 		Destroy( gameObject );
 	}
+
+
+	void OnTriggerEnter2D( Collider2D other )
+	{
+		if ( other.tag == "Wave" )
+		{
+			Wave wave = other.GetComponent<Wave>();
+
+			if ( wave.colorIndex == colorIndex )
+			{
+				_goodWaveCount++;
+			}
+		}
+    }
+
+	void OnTriggerExit2D( Collider2D other )
+	{
+		if ( other.tag == "Wave" )
+		{
+			Wave wave = other.GetComponent<Wave>();
+
+			if ( wave.colorIndex == colorIndex )
+			{
+				_goodWaveCount--;
+			}
+		}
+    }
 }
