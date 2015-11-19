@@ -14,6 +14,14 @@ public class ColorData
 
 
 
+[System.Serializable]
+public class DEBUG
+{
+	public Text		missesText;
+}
+
+
+
 public class GameManager : MonoBehaviour
 {
 	static public bool gameON = true;
@@ -24,17 +32,24 @@ public class GameManager : MonoBehaviour
 	public GameObject       lvDonePanel;
 	public GameObject[]     stars;
 	public Text             maxComboText;
-	public float[]          missCritaria;
+	public float[]          starMissCritaria;  // maximum (misses / total dots) ratio per star accepted
+	public DEBUG            __debug;
 
 	int     _bestCombo = 0;
 	int		_combo = 0;
 	float	_comboTimer;
 	int     _missesCount = 0;
+	int     _totalDots = 0;
 
 
 	void Start()
 	{
 		gameON = true;
+
+		foreach ( ColorData data in colors )
+		{
+			_totalDots += data.dotsLeft;
+		}
 	}
 
 
@@ -106,6 +121,7 @@ public class GameManager : MonoBehaviour
 	public void DotMissed()
 	{
 		_missesCount++;
+		__debug.missesText.text = "misses: " + _missesCount;
 	}
 
 
@@ -121,6 +137,13 @@ public class GameManager : MonoBehaviour
 	{
 		lvDonePanel.SetActive( true );
 		maxComboText.text = "Combo x" + _bestCombo;
+
+		float missRatio = (float) _missesCount / _totalDots;
+
+		for ( int i = 0; i < 3; ++i )
+		{
+			stars[i].SetActive( (missRatio <= starMissCritaria[i]) );
+		}
 	}
 
 

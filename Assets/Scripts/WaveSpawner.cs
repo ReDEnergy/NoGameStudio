@@ -50,9 +50,12 @@ public class WaveSpawner : MonoBehaviour
 
 	IEnumerator _SpawnLoop()
 	{
-		while ( GameManager.gameON )
+		while ( true )
 		{
-			_SpawnWave();
+			if ( GameManager.gameON )
+			{
+				_SpawnWave();
+			}
 			yield return new WaitForSeconds( spawnDelay );
 		}
 	}
