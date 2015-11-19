@@ -40,6 +40,7 @@ public class GameManager : MonoBehaviour
 	float	_comboTimer;
 	int     _missesCount = 0;
 	int     _totalDots = 0;
+	int     _starsReceived;
 
 
 	void Start()
@@ -140,15 +141,53 @@ public class GameManager : MonoBehaviour
 
 		float missRatio = (float) _missesCount / _totalDots;
 
+		_starsReceived = 0;
 		for ( int i = 0; i < 3; ++i )
 		{
+			if ( missRatio <= starMissCritaria[i] )
+			{
+				_starsReceived++;
+			}
+
 			stars[i].SetActive( (missRatio <= starMissCritaria[i]) );
+		}
+
+		{
+			LevelData lvData = GlobalData.levels[ GlobalData.currLvIndex ];
+			lvData.starsCount = _starsReceived;
+			lvData.bestCombo = _bestCombo;
+		}
+
+		if ( GlobalData.currLvIndex < GlobalData.levels.Length - 1 )
+		{
+			LevelData lvData = GlobalData.levels[ GlobalData.currLvIndex + 1 ];
+			lvData.isUnlocked = true;
 		}
 	}
 
 
 	public void OnPlayAgain()
 	{
+		Application.LoadLevel( "Gameplay" );
+	}
+
+
+	public void OnGoToLevels()
+	{
+		Application.LoadLevel( "Levels" );
+	}
+
+
+	public void OnNextLevel()
+	{
+		// if last level
+		if ( GlobalData.currLvIndex == GlobalData.levels.Length - 1 )
+		{
+			Application.LoadLevel( "Levels" );
+			return;
+		}
+
+		GlobalData.currLvIndex++;
 		Application.LoadLevel( "Gameplay" );
 	}
 }
