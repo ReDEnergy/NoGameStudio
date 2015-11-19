@@ -33,6 +33,10 @@ public class Dot : MonoBehaviour
 		{
 			_GetDestroyed();
 		}
+		else
+		{
+			_GM.DotMissed();
+		}
     }
 
 
