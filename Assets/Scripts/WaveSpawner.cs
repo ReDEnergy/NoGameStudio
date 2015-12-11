@@ -12,13 +12,9 @@ public class WaveSpawner : MonoBehaviour
 	Vector3[]		_moveDirections	= new Vector3[4];
 	Quaternion[]	_rotations		= new Quaternion[4];
 
-	GameManager _GM;
-
 
 	void Start ()
 	{
-		_GM = FindObjectOfType<GameManager>();
-
 		{ 
 			Vector3 rightSide = new Vector3( Screen.width, Screen.height / 2, 0 );
 			Vector3 mostRight = Camera.main.ScreenToWorldPoint( rightSide );
@@ -64,11 +60,11 @@ public class WaveSpawner : MonoBehaviour
 	void _SpawnWave()
 	{
 		int chosenStart = Random.Range( 0, 4 );
-		int chosenColor = Random.Range( 0, _GM.colors.Count );
+		int chosenColor = Random.Range( 0, GameManager.singleton.colors.Count );
 
 		Wave wave = Instantiate( wavePrefab );
 		wave.moveSpeed			= moveSpeed;
-		wave.colorIndex			= _GM.colors[chosenColor].colorIndex;
+		wave.colorIndex			= GameManager.singleton.colors[chosenColor].colorIndex;
 		wave.moveDirection		= _moveDirections[chosenStart];
 		wave.transform.position = _startPoints[chosenStart];
 		wave.transform.rotation = _rotations[chosenStart];

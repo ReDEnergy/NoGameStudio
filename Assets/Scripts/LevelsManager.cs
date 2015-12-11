@@ -3,17 +3,24 @@ using System.Collections;
 
 public class LevelsManager : MonoBehaviour
 {
-	public Level[]  levels;
+	public LevelPanel[]  levelPanels;
 
+
+	static public LevelsManager singleton { get; private set; }
+
+	void Awake()
+	{
+		singleton = this;
+	}
 
 	void Start ()
 	{
 		if ( !GlobalData.isInitialized )
 		{
 			GlobalData.isInitialized = true;
-			GlobalData.levels = new LevelData[levels.Length];
+			GlobalData.levels = new LevelData[levelPanels.Length];
 
-			for ( int i = 0; i < levels.Length; ++i )
+			for ( int i = 0; i < levelPanels.Length; ++i )
 			{
 				LevelData lvData = new LevelData();
 				GlobalData.levels[i] = lvData;
@@ -23,34 +30,31 @@ public class LevelsManager : MonoBehaviour
 	        }
 		}
 
-		for ( int i = 0; i < levels.Length; ++i )
+		for ( int i = 0; i < levelPanels.Length; ++i )
 		{
-			Level lv = levels[i];
+			LevelPanel lvPanel = levelPanels[i];
 			LevelData lvData = GlobalData.levels[i];
 
-			lv.lvIndex = i;
-			lv.titleText.text = "Level " + (i + 1);
+			lvPanel.lvIndex = i;
+			lvPanel.titleText.text = "Level " + (i + 1);
 
 			for ( int j = 0; j < 3; ++j )
 			{
-				lv.stars[j].SetActive( (j < lvData.starsCount) );
+				lvPanel.stars[j].SetActive( (j < lvData.starsCount) );
 			}
 
 			if ( lvData.bestCombo > 0 )
 			{
-				lv.comboText.text = "Combo x" + lvData.bestCombo;
+				lvPanel.comboText.text = "Combo x" + lvData.bestCombo;
 			}
 			else
 			{
-				lv.comboText.text = "No combo";
+				lvPanel.comboText.text = "No combo";
 			}
 
-			lv.unlockedSide.SetActive( lvData.isUnlocked );
-			lv.lockedSide.SetActive( !lvData.isUnlocked );
+			lvPanel.unlockedSide.SetActive( lvData.isUnlocked );
+			lvPanel.lockedSide.SetActive( !lvData.isUnlocked );
 		}
 	}
 	
-	void Update () {
-	
-	}
 }

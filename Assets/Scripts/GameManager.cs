@@ -43,9 +43,22 @@ public class GameManager : MonoBehaviour
 	int     _starsReceived;
 
 
+	static public GameManager singleton { get; private set; }
+
+	void Awake()
+	{
+		singleton = this;
+	}
+
+
 	void Start()
 	{
 		gameON = true;
+
+		if ( GlobalData.currLevel != null )
+		{
+			Instantiate( GlobalData.currLevel );
+		}
 
 		foreach ( ColorData data in colors )
 		{

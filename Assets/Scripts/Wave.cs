@@ -11,14 +11,10 @@ public class Wave : MonoBehaviour
 	[HideInInspector]	public Vector3	moveDirection;
 	[HideInInspector]	public float	moveSpeed;
 
-	GameManager _GM;
-
 
 	void Start ()
 	{
-		_GM = FindObjectOfType<GameManager>();
-
-		Color color = _GM.GetColor( colorIndex ).color;
+		Color color = GameManager.singleton.GetColor( colorIndex ).color;
 		graphics.SetColors( color, color );
 
 		Destroy( gameObject, MAX_LIFE_TIME );

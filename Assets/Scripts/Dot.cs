@@ -10,14 +10,12 @@ public class Dot : MonoBehaviour
 	public int				colorIndex;
 
 
-	GameManager _GM;
 	int         _goodWaveCount = 0;
 
 
 	void Start()
 	{
-		_GM = FindObjectOfType<GameManager>();
-		sprite.color = _GM.GetColor( colorIndex ).color;
+		sprite.color = GameManager.singleton.GetColor( colorIndex ).color;
 	}
 	
 
@@ -35,7 +33,7 @@ public class Dot : MonoBehaviour
 		}
 		else
 		{
-			_GM.DotMissed();
+			GameManager.singleton.DotMissed();
 		}
     }
 
@@ -44,7 +42,7 @@ public class Dot : MonoBehaviour
 	{
 		Instantiate( explosion, transform.position, Quaternion.identity );
 
-		_GM.OnDotDestroyed( colorIndex );
+		GameManager.singleton.OnDotDestroyed( colorIndex );
 
 		Destroy( gameObject );
 	}
