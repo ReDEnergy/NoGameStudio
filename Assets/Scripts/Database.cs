@@ -11,7 +11,7 @@ public class LevelData
 }
 
 
-public class GlobalData
+public class Database
 {
 	static public bool isInitialized = false;
 
@@ -19,4 +19,7 @@ public class GlobalData
 	static public Level currLevel;
 
 	static public LevelData[] levels;
+
+	static public bool gameON = true;
+
 }

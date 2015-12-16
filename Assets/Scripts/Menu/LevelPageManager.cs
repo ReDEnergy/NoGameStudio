@@ -1,12 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class LevelsManager : MonoBehaviour
+public class LevelPageManager : MonoBehaviour
 {
 	public LevelPanel[]  levelPanels;
 
 
-	static public LevelsManager singleton { get; private set; }
+	static public LevelPageManager singleton { get; private set; }
 
 	void Awake()
 	{
@@ -15,15 +15,15 @@ public class LevelsManager : MonoBehaviour
 
 	void Start ()
 	{
-		if ( !GlobalData.isInitialized )
+		if ( !Database.isInitialized )
 		{
-			GlobalData.isInitialized = true;
-			GlobalData.levels = new LevelData[levelPanels.Length];
+			Database.isInitialized = true;
+			Database.levels = new LevelData[levelPanels.Length];
 
 			for ( int i = 0; i < levelPanels.Length; ++i )
 			{
 				LevelData lvData = new LevelData();
-				GlobalData.levels[i] = lvData;
+				Database.levels[i] = lvData;
 				lvData.isUnlocked = (i == 0);
 				lvData.starsCount = 0;
 				lvData.bestCombo = 0;
@@ -33,7 +33,7 @@ public class LevelsManager : MonoBehaviour
 		for ( int i = 0; i < levelPanels.Length; ++i )
 		{
 			LevelPanel lvPanel = levelPanels[i];
-			LevelData lvData = GlobalData.levels[i];
+			LevelData lvData = Database.levels[i];
 
 			lvPanel.lvIndex = i;
 			lvPanel.titleText.text = "Level " + (i + 1);

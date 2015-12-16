@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+
 
 
 public class LevelPanel : MonoBehaviour
@@ -19,9 +21,9 @@ public class LevelPanel : MonoBehaviour
 
 	public void OnStart()
 	{
-		GlobalData.currLvIndex	= lvIndex;
-		GlobalData.currLevel    = level;
+		Database.currLvIndex	= lvIndex;
+		Database.currLevel    = level;
 
-		Application.LoadLevel( "Gameplay" );
+		SceneManager.LoadScene( "Gameplay" );
 	}
 }

@@ -2,15 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
-
-
-[System.Serializable]
-public class ColorData
-{
-	public int      colorIndex;
-	public Color	color;
-	public int      dotsLeft;
-}
+using UnityEngine.SceneManagement;
 
 
 
@@ -18,15 +10,13 @@ public class ColorData
 public class DEBUG
 {
 	public Text		missesText;
+	public Level    level;
 }
 
 
 
-public class GameManager : MonoBehaviour
+public class GameplayManager : MonoBehaviour
 {
-	static public bool gameON = true;
-
-	public List<ColorData>	colors;
 	public float            inactiveComboTime;
 	public Text             comboText;
 	public GameObject       lvDonePanel;
@@ -42,33 +32,63 @@ public class GameManager : MonoBehaviour
 	int     _totalDots = 0;
 	int     _starsReceived;
 
+	Dictionary<int, int>    _colorsLeft = new Dictionary<int, int>();
 
-	static public GameManager singleton { get; private set; }
+	public Level currLevel { get; private set; }
+
+
+	static public GameplayManager singleton { get; private set; }
 
 	void Awake()
 	{
 		singleton = this;
+
+		Database.gameON = true;
+
+		if ( Database.currLevel != null )
+		{
+			currLevel = Instantiate( Database.currLevel );
+		}
+		else
+		{
+			currLevel = __debug.level;
+		}
+
+		foreach ( ColorData data in currLevel.colors )
+		{
+			_colorsLeft.Add( data.colorIndex, 0 );
+		}
+
+		foreach ( Transform child in currLevel.transform )
+		{
+			_colorsLeft[child.GetComponent<Dot>().colorIndex] ++;
+			_totalDots ++;
+		}
 	}
 
 
-	void Start()
+	void OnDestroy()
 	{
-		gameON = true;
-
-		if ( GlobalData.currLevel != null )
-		{
-			Instantiate( GlobalData.currLevel );
-		}
-
-		foreach ( ColorData data in colors )
-		{
-			_totalDots += data.dotsLeft;
-		}
+		singleton = null;
 	}
 
 
 	void Update()
 	{
+		if ( Input.GetMouseButtonDown(0) )
+		{
+			Ray ray = Camera.main.ScreenPointToRay( Input.mousePosition );
+
+			RaycastHit2D hit = Physics2D.Raycast( ray.origin, ray.direction, 
+												  Mathf.Infinity, LayerMask.GetMask("Dots") );
+
+			if ( hit.collider != null )
+			{
+				hit.collider.GetComponent<Dot>().OnClick();
+			}
+		}
+
+
 		if ( _combo > 0 )
 		{
 			_comboTimer += Time.deltaTime;
@@ -84,28 +104,30 @@ public class GameManager : MonoBehaviour
 	}
 
 
-	public void OnDotDestroyed( int colorIndex )
+	public 
+	void OnDotDestroyed( int colorIndex )
 	{
 		ColorData data = GetColor( colorIndex );
-		data.dotsLeft--;
+		_colorsLeft[colorIndex]--;
 		_AddCombo();
 
-		if ( data.dotsLeft <= 0 )
+		if ( _colorsLeft[colorIndex] <= 0 )
 		{
-			colors.Remove( data );
+			currLevel.colors.Remove( data );
 
-			if ( colors.Count == 0 )
+			if ( currLevel.colors.Count == 0 )
 			{
-				gameON = false;
+				Database.gameON = false;
 				_LevelComplete();
 			}
 		}
 	}
 
 
-	public ColorData GetColor( int colorIndex )
+	public 
+	ColorData GetColor( int colorIndex )
 	{
-		foreach ( ColorData data in colors )
+		foreach ( ColorData data in currLevel.colors )
 		{
 			if ( data.colorIndex == colorIndex )
 			{
@@ -132,7 +154,8 @@ public class GameManager : MonoBehaviour
 	}
 
 
-	public void DotMissed()
+	public 
+	void DotMissed()
 	{
 		_missesCount++;
 		__debug.missesText.text = "misses: " + _missesCount;
@@ -166,41 +189,43 @@ public class GameManager : MonoBehaviour
 		}
 
 		{
-			LevelData lvData = GlobalData.levels[ GlobalData.currLvIndex ];
+			LevelData lvData = Database.levels[ Database.currLvIndex ];
 			lvData.starsCount = _starsReceived;
 			lvData.bestCombo = _bestCombo;
 		}
 
-		if ( GlobalData.currLvIndex < GlobalData.levels.Length - 1 )
+		if ( Database.currLvIndex < Database.levels.Length - 1 )
 		{
-			LevelData lvData = GlobalData.levels[ GlobalData.currLvIndex + 1 ];
+			LevelData lvData = Database.levels[ Database.currLvIndex + 1 ];
 			lvData.isUnlocked = true;
 		}
 	}
 
 
-	public void OnPlayAgain()
+	public 
+	void OnPlayAgain()
 	{
-		Application.LoadLevel( "Gameplay" );
+		SceneManager.LoadScene( "Gameplay" );
 	}
 
 
-	public void OnGoToLevels()
+	public 
+	void OnGoToLevels()
 	{
-		Application.LoadLevel( "Levels" );
+		SceneManager.LoadScene( "Levels" );
 	}
 
 
 	public void OnNextLevel()
 	{
 		// if last level
-		if ( GlobalData.currLvIndex == GlobalData.levels.Length - 1 )
+		if ( Database.currLvIndex == Database.levels.Length - 1 )
 		{
-			Application.LoadLevel( "Levels" );
+			SceneManager.LoadScene( "Levels" );
 			return;
 		}
 
-		GlobalData.currLvIndex++;
-		Application.LoadLevel( "Gameplay" );
+		Database.currLvIndex++;
+		SceneManager.LoadScene( "Gameplay" );
 	}
 }
