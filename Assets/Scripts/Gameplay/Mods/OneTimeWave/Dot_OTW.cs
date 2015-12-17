@@ -4,9 +4,9 @@ using System.Collections.Generic;
 
 
 
-public class Dot_OneWave : Dot 
+public class Dot_OTW : Dot 
 {
-	List<Wave>  _wavesToDestroy = new List<Wave>();
+	List<Wave_OTW>  _waves = new List<Wave_OTW>();
 	
 
 
@@ -15,12 +15,21 @@ public class Dot_OneWave : Dot
 	{
 		if ( _goodWaveCount > 0 )
 		{
-			// bug here when a wave touches multiple dots
-			foreach ( Wave wave in _wavesToDestroy )
+			for ( int i = 0; i < _waves.Count; ++i )
 			{
+				Wave_OTW wave = _waves[i];
+
+				for ( int j = 0; j < wave.dots.Count; ++j )
+				{
+					if ( wave.dots[j] != this )
+					{
+						wave.dots[j].OnLostWave( wave );
+					}
+				}
+
 				Destroy( wave.gameObject );
 			}
-			_wavesToDestroy.Clear();
+			_waves.Clear();
 
 			_GetDestroyed();
 		}
@@ -36,12 +45,13 @@ public class Dot_OneWave : Dot
 	{
 		if ( other.tag == "Wave" )
 		{
-			Wave wave = other.GetComponent<Wave>();
+			Wave_OTW wave = other.GetComponent<Wave_OTW>();
 
 			if ( wave.colorIndex == colorIndex )
 			{
 				_goodWaveCount++;
-				_wavesToDestroy.Add( wave );
+				_waves.Add( wave );
+				wave.dots.Add( this );
 			}
 		}
     }
@@ -52,13 +62,22 @@ public class Dot_OneWave : Dot
 	{
 		if ( other.tag == "Wave" )
 		{
-			Wave wave = other.GetComponent<Wave>();
+			Wave_OTW wave = other.GetComponent<Wave_OTW>();
 
 			if ( wave.colorIndex == colorIndex )
 			{
 				_goodWaveCount--;
-				_wavesToDestroy.Remove( wave );
+				_waves.Remove( wave );
+				wave.dots.Remove( this );
 			}
 		}
     }
+
+
+	public
+	void OnLostWave( Wave_OTW wave )
+	{
+		_goodWaveCount--;
+		_waves.Remove( wave );
+	}
 }

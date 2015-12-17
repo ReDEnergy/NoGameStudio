@@ -18,6 +18,7 @@ public class PanelSpawn
 public class LevelPageManager : MonoBehaviour
 {
 	public PanelSpawn	panelSpawn;
+	public Level[]		levels;
 
 
 	static public LevelPageManager singleton { get; private set; }
@@ -54,7 +55,8 @@ public class LevelPageManager : MonoBehaviour
 			}
 
 			lvPanel.lvIndex = i;
-			lvPanel.titleText.text = "Level " + (i + 1);
+			lvPanel.levelNumberText.text = "Level " + (i + 1);
+			lvPanel.levelNameText.text = levels[i].name;
 
 			for ( int j = 0; j < 3; ++j )
 			{

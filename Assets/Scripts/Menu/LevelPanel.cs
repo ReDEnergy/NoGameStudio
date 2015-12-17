@@ -9,7 +9,8 @@ public class LevelPanel : MonoBehaviour
 {
 	public GameObject[]     stars;
 	public Text             comboText;
-	public Text             titleText;
+	public Text             levelNumberText;
+	public Text             levelNameText;
 	public GameObject       unlockedSide;
 	public GameObject       lockedSide;
 	public Level            level;
