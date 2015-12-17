@@ -1,39 +1,57 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+
+[System.Serializable]
+public class PanelSpawn
+{
+	public LevelPanel	prefab;
+	public float        startX;
+	public float        startY;
+	public float		jumpX;
+	public float        jumpY;
+	public int			perRow;
+	public Transform    container;
+}
+
+
 public class LevelPageManager : MonoBehaviour
 {
-	public LevelPanel[]  levelPanels;
+	public PanelSpawn	panelSpawn;
 
 
 	static public LevelPageManager singleton { get; private set; }
-
 	void Awake()
 	{
 		singleton = this;
 	}
+	void OnDestroy()
+	{
+		singleton = null;
+	}
 
 	void Start ()
 	{
-		if ( !Database.isInitialized )
-		{
-			Database.isInitialized = true;
-			Database.levels = new LevelData[levelPanels.Length];
+		Database.Initialize();	
 
-			for ( int i = 0; i < levelPanels.Length; ++i )
-			{
-				LevelData lvData = new LevelData();
-				Database.levels[i] = lvData;
-				lvData.isUnlocked = (i == 0);
-				lvData.starsCount = 0;
-				lvData.bestCombo = 0;
-	        }
-		}
 
-		for ( int i = 0; i < levelPanels.Length; ++i )
+		float currX = panelSpawn.startX;
+		float currY = panelSpawn.startY;
+
+		for ( int i = 0; i < Database.levels.Count; ++i )
 		{
-			LevelPanel lvPanel = levelPanels[i];
 			LevelData lvData = Database.levels[i];
+
+			LevelPanel lvPanel = Instantiate( panelSpawn.prefab );
+			lvPanel.transform.SetParent( panelSpawn.container );
+			lvPanel.transform.localPosition = new Vector3( currX, currY, 0 );
+
+			currX += panelSpawn.jumpX;
+			if ( (i % 3) == (panelSpawn.perRow - 1) )
+			{
+				currX = panelSpawn.startX;
+				currY += panelSpawn.jumpY;
+			}
 
 			lvPanel.lvIndex = i;
 			lvPanel.titleText.text = "Level " + (i + 1);

@@ -10,24 +10,20 @@ using UnityEngine.SceneManagement;
 public class DEBUG
 {
 	public Text		missesText;
-	public Level    level;
 }
 
 
 
 public class GameplayManager : MonoBehaviour
 {
-	public float            inactiveComboTime;
-	public Text             comboText;
 	public GameObject       lvDonePanel;
 	public GameObject[]     stars;
 	public Text             maxComboText;
 	public float[]          starMissCritaria;  // maximum (misses / total dots) ratio per star accepted
+	public Level[]			levels;
+		
 	public DEBUG            __debug;
 
-	int     _bestCombo = 0;
-	int		_combo = 0;
-	float	_comboTimer;
 	int     _missesCount = 0;
 	int     _totalDots = 0;
 	int     _starsReceived;
@@ -43,16 +39,11 @@ public class GameplayManager : MonoBehaviour
 	{
 		singleton = this;
 
+		Database.Initialize();	
+
 		Database.gameON = true;
 
-		if ( Database.currLevel != null )
-		{
-			currLevel = Instantiate( Database.currLevel );
-		}
-		else
-		{
-			currLevel = __debug.level;
-		}
+		currLevel = Instantiate( levels[ Database.currLvIndex ] );
 
 		foreach ( ColorData data in currLevel.colors )
 		{
@@ -87,20 +78,6 @@ public class GameplayManager : MonoBehaviour
 				hit.collider.GetComponent<Dot>().OnClick();
 			}
 		}
-
-
-		if ( _combo > 0 )
-		{
-			_comboTimer += Time.deltaTime;
-
-			float alpha = Mathf.Lerp( 1, 0, _comboTimer / inactiveComboTime );
-			_ChangeComboAlpha( alpha );
-
-			if ( _comboTimer >= inactiveComboTime )
-			{
-				_combo = 0;
-			}
-		}
 	}
 
 
@@ -109,7 +86,8 @@ public class GameplayManager : MonoBehaviour
 	{
 		ColorData data = GetColor( colorIndex );
 		_colorsLeft[colorIndex]--;
-		_AddCombo();
+
+		ScoreManager.singleton.AddCombo();
 
 		if ( _colorsLeft[colorIndex] <= 0 )
 		{
@@ -138,22 +116,6 @@ public class GameplayManager : MonoBehaviour
 		return null;
 	}
 
-
-	void _AddCombo()
-	{
-		_combo++;
-		_comboTimer = 0;
-
-		comboText.text = "Combo x" + _combo;
-		_ChangeComboAlpha( 1 );
-
-		if ( _combo > _bestCombo )
-		{
-			_bestCombo = _combo;
-		}
-	}
-
-
 	public 
 	void DotMissed()
 	{
@@ -162,18 +124,10 @@ public class GameplayManager : MonoBehaviour
 	}
 
 
-	void _ChangeComboAlpha( float amount )
-	{
-		Color textColor = comboText.color;
-		textColor.a = amount;
-		comboText.color = textColor;
-	}
-
-
 	void _LevelComplete()
 	{
 		lvDonePanel.SetActive( true );
-		maxComboText.text = "Combo x" + _bestCombo;
+		maxComboText.text = "Combo x" + ScoreManager.singleton.GetBestCombo();
 
 		float missRatio = (float) _missesCount / _totalDots;
 
@@ -191,10 +145,10 @@ public class GameplayManager : MonoBehaviour
 		{
 			LevelData lvData = Database.levels[ Database.currLvIndex ];
 			lvData.starsCount = _starsReceived;
-			lvData.bestCombo = _bestCombo;
+			lvData.bestCombo = ScoreManager.singleton.GetBestCombo();
 		}
 
-		if ( Database.currLvIndex < Database.levels.Length - 1 )
+		if ( Database.currLvIndex < Database.levels.Count - 1 )
 		{
 			LevelData lvData = Database.levels[ Database.currLvIndex + 1 ];
 			lvData.isUnlocked = true;
@@ -216,10 +170,11 @@ public class GameplayManager : MonoBehaviour
 	}
 
 
-	public void OnNextLevel()
+	public 
+	void OnNextLevel()
 	{
 		// if last level
-		if ( Database.currLvIndex == Database.levels.Length - 1 )
+		if ( Database.currLvIndex == Database.levels.Count - 1 )
 		{
 			SceneManager.LoadScene( "Levels" );
 			return;

@@ -21,8 +21,7 @@ public class LevelPanel : MonoBehaviour
 
 	public void OnStart()
 	{
-		Database.currLvIndex	= lvIndex;
-		Database.currLevel    = level;
+		Database.currLvIndex = lvIndex;
 
 		SceneManager.LoadScene( "Gameplay" );
 	}

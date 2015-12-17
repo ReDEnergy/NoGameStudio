@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class DotExplosion : MonoBehaviour
+public class ExplosionDot : MonoBehaviour
 {
 	public float timeToLive;
 

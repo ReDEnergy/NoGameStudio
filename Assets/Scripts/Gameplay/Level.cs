@@ -15,5 +15,6 @@ public class ColorData
 public class Level : MonoBehaviour
 {
 	public List<ColorData>	colors;
+	public Wave             wavePrefab;
 	
 }

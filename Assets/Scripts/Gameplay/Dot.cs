@@ -6,11 +6,10 @@ public class Dot : MonoBehaviour
 	public SpriteRenderer	sprite;
 	public Transform        explosion;
 	public GameObject       highlight;
-
 	public int				colorIndex;
 
 
-	int         _goodWaveCount = 0;
+	protected int   _goodWaveCount = 0;
 
 
 	void Start()
@@ -25,7 +24,7 @@ public class Dot : MonoBehaviour
 	}
 
 
-	public
+	virtual public
 	void OnClick()
 	{
 		if ( _goodWaveCount > 0 )
@@ -39,6 +38,7 @@ public class Dot : MonoBehaviour
     }
 
 
+	protected
 	void _GetDestroyed()
 	{
 		Instantiate( explosion, transform.position, Quaternion.identity );
@@ -49,6 +49,7 @@ public class Dot : MonoBehaviour
 	}
 
 
+	virtual protected
 	void OnTriggerEnter2D( Collider2D other )
 	{
 		if ( other.tag == "Wave" )
@@ -62,6 +63,8 @@ public class Dot : MonoBehaviour
 		}
     }
 
+
+	virtual protected
 	void OnTriggerExit2D( Collider2D other )
 	{
 		if ( other.tag == "Wave" )

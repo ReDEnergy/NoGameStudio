@@ -3,7 +3,6 @@ using System.Collections;
 
 public class WaveSpawner : MonoBehaviour
 {
-	public Wave		wavePrefab;
 	public float	spawnDelay;
 	public float	cornerOffset;
 	
@@ -64,7 +63,7 @@ public class WaveSpawner : MonoBehaviour
 		int chosenStart = Random.Range( 0, _startPoints.Length );
 		int chosenColor = Random.Range( 0, GameplayManager.singleton.currLevel.colors.Count );
 
-		Wave wave = Instantiate( wavePrefab );
+		Wave wave = Instantiate( GameplayManager.singleton.currLevel.wavePrefab );
 		wave.colorIndex			= GameplayManager.singleton.currLevel.colors[chosenColor].colorIndex;
 		wave.transform.position = _startPoints[chosenStart];
 		wave.transform.rotation = _rotations[chosenStart];
