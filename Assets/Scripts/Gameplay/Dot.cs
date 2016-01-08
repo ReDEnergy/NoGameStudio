@@ -27,7 +27,7 @@ public class Dot : MonoBehaviour
 	virtual public
 	void OnClick()
 	{
-		if ( _goodWaveCount > 0 )
+        if ( _goodWaveCount > 0 )
 		{
 			_GetDestroyed();
 		}

@@ -22,7 +22,7 @@ public class Database
 {
 	static bool _isInitialized = false;
 
-	static public int currLvIndex = 2;
+	static public int currLvIndex = 0;
 
 	static public bool gameON = true;
 
@@ -35,6 +35,8 @@ public class Database
 	{
 		if ( !_isInitialized )
 		{
+            _isInitialized = true;
+
 			levels.Add( new LevelData( true ) );
 			levels.Add( new LevelData( true ) );
 			levels.Add( new LevelData( true ) );

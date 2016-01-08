@@ -54,9 +54,10 @@ public class LevelPageManager : MonoBehaviour
 				currY += panelSpawn.jumpY;
 			}
 
-			lvPanel.lvIndex = i;
+            lvPanel.lvIndex = i;
 			lvPanel.levelNumberText.text = "Level " + (i + 1);
 			lvPanel.levelNameText.text = levels[i].name;
+
 
 			for ( int j = 0; j < 3; ++j )
 			{
