@@ -3,19 +3,28 @@ using System.Collections;
 
 public class Dot : MonoBehaviour
 {
-	public SpriteRenderer	sprite;
+    public enum SoundEffect
+    {
+        POP,
+        KICK,
+        HIHAT,
+        SNARE
+    }
+
+    public SpriteRenderer	sprite;
 	public Transform        explosion;
 	public GameObject       highlight;
 	public int				colorIndex;
+    public SoundEffect      soundEffect;
 
 
-	protected int   _goodWaveCount = 0;
+    protected int   _goodWaveCount = 0;
 
 
-	void Start()
-	{
-		sprite.color = GameplayManager.singleton.GetColor( colorIndex ).color;
-	}
+    void Start()
+    {
+        sprite.color = GameplayManager.singleton.GetColor(colorIndex).color;
+    }
 	
 
 	void Update()
@@ -41,9 +50,11 @@ public class Dot : MonoBehaviour
 	protected
 	void _GetDestroyed()
 	{
-		Instantiate( explosion, transform.position, Quaternion.identity );
+		Transform expl = Instantiate( explosion, transform.position, Quaternion.identity ) as Transform;
+        expl.GetComponent<AudioSource>().clip = expl.GetComponent<ExplosionDot>().audioClips[(int)soundEffect];
+        expl.GetComponent<AudioSource>().Play();
 
-		GameplayManager.singleton.OnDotDestroyed( colorIndex );
+        GameplayManager.singleton.OnDotDestroyed( colorIndex );
 
 		Destroy( gameObject );
 	}

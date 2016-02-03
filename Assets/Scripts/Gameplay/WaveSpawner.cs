@@ -5,8 +5,10 @@ public class WaveSpawner : MonoBehaviour
 {
 	public float	spawnDelay;
 	public float	cornerOffset;
-	
 
+    private int     currentWave = 0;
+    private int[]   colors = { 0, 1 };
+    private int[]   directions = { 1, 0 };
 
 	Vector3[]		_startPoints	= new Vector3[8];
 	Quaternion[]	_rotations		= new Quaternion[8];
@@ -62,6 +64,10 @@ public class WaveSpawner : MonoBehaviour
 	{
 		int chosenStart = Random.Range( 0, _startPoints.Length );
 		int chosenColor = Random.Range( 0, GameplayManager.singleton.currLevel.colors.Count );
+
+        chosenStart = directions[currentWave%2];
+        chosenColor = colors[currentWave%2];
+        currentWave++;
 
 		Wave wave = Instantiate( GameplayManager.singleton.currLevel.wavePrefab );
 		wave.colorIndex			= GameplayManager.singleton.currLevel.colors[chosenColor].colorIndex;
